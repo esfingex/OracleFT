@@ -103,8 +103,15 @@ class Manager:
         
         # Also try to launch the tray if not already running
         try:
-            subprocess.Popen([str(self.python_bin), str(self.base_path / "manager.py"), "tray"], 
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            # Use a more robust detached process launch
+            subprocess.Popen(
+                [str(self.python_bin), str(self.base_path / "manager.py"), "tray"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL,
+                start_new_session=True,
+                close_fds=True
+            )
         except Exception:
             pass
 
@@ -257,10 +264,16 @@ class Manager:
         print(f"\n✨ Installation complete! OracleFT is now in {target_dir}")
         print("💡 The service is enabled and the Tray will start automatically.")
         
-        # Launch tray immediately in background
+        # Launch tray immediately in background (fully detached)
         try:
-            subprocess.Popen([str(target_dir / ".venv" / "bin" / "python3"), str(target_dir / "manager.py"), "tray"], 
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            subprocess.Popen(
+                [str(target_dir / ".venv" / "bin" / "python3"), str(target_dir / "manager.py"), "tray"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL,
+                start_new_session=True,
+                close_fds=True
+            )
             print("🚀 Tray icon triggered!")
         except Exception:
             pass
