@@ -35,8 +35,8 @@ echo "🌟 You can now launch the tray icon by running: oracleft-tray"
 echo "   (Or simply restart your session to see it automatically)"
 
 # Create a symlink in /usr/local/bin for easy access
-ln -sf "$TARGET_DIR/.venv/bin/python3" /usr/local/bin/oracleft
-ln -sf "$TARGET_DIR/manager.py" /usr/local/bin/oracleft-manager
+ln -sf "$TARGET_DIR/.venv/bin/python3" /usr/local/bin/oracleft-python
+ln -sf "$TARGET_DIR/manager.py" /usr/local/bin/oracleft
 chmod +x "$TARGET_DIR/manager.py"
 
-echo "🚀 Done! Your Oracle Instance Automator is now a system service."
+echo "🚀 Done! Your Oracle Instance Automator is now a system command: 'oracleft'"

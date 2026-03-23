@@ -23,8 +23,9 @@ Este comando configurará:
 Una vez instalado, puedes gestionar el automador mediante el icono en la barra de tareas o por terminal:
 
 ```bash
-oracleft-manager status
-oracleft-manager logs
+oracleft status
+oracleft logs
+oracleft tray
 ```
 
 ---
