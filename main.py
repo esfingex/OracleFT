@@ -4,6 +4,17 @@ import sys
 from pathlib import Path
 from core import OCIWorker, notifier
 
+# Configure logging with unbuffered file and console handlers
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
+    handlers=[
+        logging.FileHandler("launch_instance.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger("OracleFT")
+
 async def main(dry_run: bool = False):
     sentinel = Path(".instance_created")
     if sentinel.exists() and not dry_run:
