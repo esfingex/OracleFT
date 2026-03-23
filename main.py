@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import sys
+from pathlib import Path
 from core import OCIWorker, notifier
 
 async def main(dry_run: bool = False):
@@ -12,7 +13,7 @@ async def main(dry_run: bool = False):
     worker = OCIWorker()
     try:
         instance = await worker.launch(dry_run=dry_run)
-        if instance:
+        if instance and not dry_run:
             sentinel.touch()
             details = {
                 "Display Name": getattr(instance, 'display_name', 'N/A'),
