@@ -226,6 +226,74 @@ class Manager:
             except subprocess.CalledProcessError:
                 print("⚠️ No crontab found.")
 
+    def install(self):
+        """Professional installation to /opt/oracleft with systemd and autostart."""
+        target_dir = Path("/opt/oracleft")
+        print(f"🚀 Installing OracleFT to {target_dir}...")
+        
+        # 1. Create directory and copy files
+        try:
+            subprocess.run(["sudo", "mkdir", "-p", str(target_dir)], check=True)
+            subprocess.run(["sudo", "cp", "-r", str(self.base_path) + "/.", str(target_dir)], check=True)
+            subprocess.run(["sudo", "chown", "-R", f"{os.getlogin()}:{os.getlogin()}", str(target_dir)], check=True)
+        except Exception as e:
+            print(f"❌ Failed to copy files: {e}")
+            return
+
+        # 2. Create Systemd Service
+        self.create_systemd_service(target_dir)
+        
+        # 3. Create Desktop Autostart
+        self.create_autostart_entry(target_dir)
+
+        print(f"\n✨ Installation complete! OracleFT is now in {target_dir}")
+        print("💡 The service is enabled and the Tray will start on next login.")
+        print("To start manually now: python3 manager.py start")
+
+    def create_systemd_service(self, target_dir):
+        service_content = f"""[Unit]
+Description=Oracle Free Tier Automator
+After=network.target
+
+[Service]
+Type=simple
+User={os.getlogin()}
+WorkingDirectory={target_dir}
+ExecStart={target_dir}/.venv/bin/python3 {target_dir}/main.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+"""
+        service_path = Path("/tmp/oracleft.service")
+        service_path.write_text(service_content)
+        
+        try:
+            subprocess.run(["sudo", "mv", str(service_path), "/etc/systemd/system/oracleft.service"], check=True)
+            subprocess.run(["sudo", "systemctl", "daemon-reload"], check=True)
+            subprocess.run(["sudo", "systemctl", "enable", "oracleft.service"], check=True)
+            print("✅ Systemd service installed and enabled.")
+        except Exception as e:
+            print(f"⚠️ Failed to install systemd service: {e}")
+
+    def create_autostart_entry(self, target_dir):
+        autostart_dir = Path("~/.config/autostart").expanduser()
+        autostart_dir.mkdir(parents=True, exist_ok=True)
+        
+        desktop_content = f"""[Desktop Entry]
+Type=Application
+Exec={target_dir}/.venv/bin/python3 {target_dir}/manager.py tray
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=OracleFT Tray
+Comment=Monitoring Oracle Free Tier availability
+Icon={target_dir}/core/assets/oracle_icon.png
+"""
+        (autostart_dir / "oracleft.desktop").write_text(desktop_content)
+        print("✅ Autostart entry created in ~/.config/autostart/")
+
     def reset(self):
         sentinel = self.base_path / ".instance_created"
         if sentinel.exists():
@@ -236,7 +304,13 @@ class Manager:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Oracle Free Tier Manager")
-    parser.add_argument("command", choices=["setup", "update-setting", "start", "stop", "status", "restart", "link-argos", "schedule", "reset", "check-system", "tray", "gui"])
+    parser.add_argument(
+        "command", 
+        nargs="?", 
+        choices=["setup", "start", "stop", "status", "restart", "schedule", "reset", "tray", "install"],
+        default="tray",
+        help="Command to perform (default: tray)"
+    )
     parser.add_argument("key", nargs="?", help="Key to update or schedule action (show/install/remove)")
 
     args = parser.parse_args()
@@ -244,6 +318,8 @@ if __name__ == "__main__":
 
     if args.command == "setup":
         mgr.setup()
+    elif args.command == "install":
+        mgr.install()
     elif args.command == "update-setting":
         if not args.key:
             print("Error: update-setting requires a key.")

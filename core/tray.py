@@ -87,7 +87,12 @@ class OracleTray:
     def on_logs(self, icon=None, item=None):
         log_file = self.base_path / "launch_instance.log"
         if log_file.exists():
-            subprocess.run(['zenity', '--text-info', '--filename', str(log_file), '--title', 'OracleFT Logs', '--width=600', '--height=400'])
+            if log_file.stat().st_size == 0:
+                subprocess.run(['zenity', '--info', '--text', '📝 El archivo de log está vacío por ahora.\nEspere a que la automatización genere actividad.', '--title', 'OracleFT Logs'])
+            else:
+                subprocess.run(['zenity', '--text-info', '--filename', str(log_file), '--title', 'OracleFT Logs', '--width=700', '--height=500', '--font=Monospace'])
+        else:
+            subprocess.run(['zenity', '--error', '--text', '❌ No se encontró el archivo de log.', '--title', 'Error'])
 
     def on_reset(self, icon=None, item=None):
         self.manager.reset()
