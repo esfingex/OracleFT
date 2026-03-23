@@ -13,6 +13,8 @@ class Manager:
         self.venv_path = self.base_path / ".venv"
         self.python_bin = self.base_path / ".venv" / "bin" / "python3" if os.name != "nt" else self.venv_path / "Scripts" / "python.exe"
         self.pid_file = self.base_path / "oracleft.pid"
+        self.log_dir = self.base_path / "logs"
+        self.log_dir.mkdir(parents=True, exist_ok=True)
 
         # Auto-switch to venv if available and not already in it
         if self.python_bin.exists() and sys.executable != str(self.python_bin):
@@ -90,7 +92,7 @@ class Manager:
             return
 
         print("🚀 Starting Oracle Instance Creation script in background...")
-        log_file = open("launch_instance.log", "a")
+        log_file = open(self.log_dir / "launch_instance.log", "a")
         # Use -u for unbuffered output
         proc = subprocess.Popen([str(self.python_bin), "-u", "main.py"], 
                                 stdout=log_file, stderr=log_file, 

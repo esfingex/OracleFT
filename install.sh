@@ -15,8 +15,9 @@ USER_NAME=$(logname || echo $SUDO_USER)
 echo "📦 Creating application directory at $TARGET_DIR..."
 mkdir -p "$TARGET_DIR"
 
-echo "📂 Copying files..."
-cp -r . "$TARGET_DIR/"
+echo "📂 Copying essential software files..."
+mkdir -p "$TARGET_DIR/logs"
+cp -r core main.py manager.py main_test.py requirements.txt oci.env sample_oci_config LICENSE README.md "$TARGET_DIR/"
 chown -R "$USER_NAME:$USER_NAME" "$TARGET_DIR"
 
 echo "🐍 Setting up Virtual Environment in $TARGET_DIR..."

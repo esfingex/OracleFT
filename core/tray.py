@@ -85,7 +85,7 @@ class OracleTray:
         subprocess.run(['zenity', '--info', '--text', msg, '--title', 'OracleFT Status'])
 
     def on_logs(self, icon=None, item=None):
-        log_file = self.base_path / "launch_instance.log"
+        log_file = self.base_path / "logs" / "launch_instance.log"
         if log_file.exists():
             if log_file.stat().st_size == 0:
                 subprocess.run(['zenity', '--info', '--text', '📝 El archivo de log está vacío por ahora.\nEspere a que la automatización genere actividad.', '--title', 'OracleFT Logs'])
