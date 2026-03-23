@@ -228,13 +228,16 @@ class Manager:
         print(f"🚀 Installing OracleFT to {target_dir}...")
         
         # 1. Create directory and copy files
-        try:
-            subprocess.run(["sudo", "mkdir", "-p", str(target_dir)], check=True)
-            subprocess.run(["sudo", "cp", "-r", str(self.base_path) + "/.", str(target_dir)], check=True)
-            subprocess.run(["sudo", "chown", "-R", f"{os.getlogin()}:{os.getlogin()}", str(target_dir)], check=True)
-        except Exception as e:
-            print(f"❌ Failed to copy files: {e}")
-            return
+        if self.base_path != target_dir:
+            try:
+                subprocess.run(["sudo", "mkdir", "-p", str(target_dir)], check=True)
+                subprocess.run(["sudo", "cp", "-r", str(self.base_path) + "/.", str(target_dir)], check=True)
+                subprocess.run(["sudo", "chown", "-R", f"{os.getlogin()}:{os.getlogin()}", str(target_dir)], check=True)
+            except Exception as e:
+                print(f"❌ Failed to copy files: {e}")
+                return
+        else:
+            print("ℹ️  Already running from target directory, skipping copy.")
 
         # 2. Create Systemd Service
         self.create_systemd_service(target_dir)
