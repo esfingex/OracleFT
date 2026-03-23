@@ -2,20 +2,30 @@
 
 A professional, modular Python-based tool to automate the creation of Oracle Cloud "Always Free" instances.
 
-## 💎 GNOME Shell Integration (Top Bar)
-Since modern GNOME (45/46+) has limited support for older extensions, OracleFT now includes a **Native System Tray** icon.
+## 🚀 Instalación Profesional
 
-### 🚀 Recommended: Native Tray (Works on Ubuntu 24.04)
-Run the following command to see a permanent icon in your top bar:
+Para desplegar OracleFT como un servicio del sistema en `/opt/oracleft`:
+
 ```bash
-python3 manager.py tray
+sudo ./install.sh
 ```
-*This will open a menu where you can Start, Stop, view Logs and Status directly.*
 
-### 🧩 Alternative: Argos Extension
-If you prefer using the Argos extension (and it's compatible with your version):
-1.  Install [Argos](https://ext.gnome.org/extension/1176/argos/).
-2.  Run `python3 manager.py link-argos`.
+Este comando configurará:
+1.  **Entorno**: `/opt/oracleft` con su propio `venv`.
+2.  **Servicio**: Un servicio de Systemd (`oracleft.service`) que se reinicia solo.
+3.  **Autostart**: El icono del Systray aparecerá al iniciar sesión.
+4.  **Acceso rápido**: Comando `oracleft-manager` disponible en todo el sistema.
+
+---
+
+## 🛠️ Gestión Diaria
+
+Una vez instalado, puedes gestionar el automador mediante el icono en la barra de tareas o por terminal:
+
+```bash
+oracleft-manager status
+oracleft-manager logs
+```
 
 ---
 
