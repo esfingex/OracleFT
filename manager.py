@@ -246,8 +246,15 @@ class Manager:
         self.create_autostart_entry(target_dir)
 
         print(f"\n✨ Installation complete! OracleFT is now in {target_dir}")
-        print("💡 The service is enabled and the Tray will start on next login.")
-        print("To start manually now: python3 manager.py start")
+        print("💡 The service is enabled and the Tray will start automatically.")
+        
+        # Launch tray immediately in background
+        try:
+            subprocess.Popen([str(target_dir / ".venv" / "bin" / "python3"), str(target_dir / "manager.py"), "tray"], 
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            print("🚀 Tray icon triggered!")
+        except Exception:
+            pass
 
     def create_systemd_service(self, target_dir):
         service_content = f"""[Unit]
