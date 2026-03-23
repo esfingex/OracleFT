@@ -17,6 +17,7 @@ oracleft.pid
 
 # Private Agent Skills
 agents/
-id_rsa
-id_rsa.pub
+id_rsa*
+*.pub
+/home/esfingex/workspace/OracleFT/id_rsa*
 
