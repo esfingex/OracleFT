@@ -91,7 +91,8 @@ class Manager:
 
         print("🚀 Starting Oracle Instance Creation script in background...")
         log_file = open("launch_instance.log", "a")
-        proc = subprocess.Popen([str(self.python_bin), "main.py"], 
+        # Use -u for unbuffered output
+        proc = subprocess.Popen([str(self.python_bin), "-u", "main.py"], 
                                 stdout=log_file, stderr=log_file, 
                                 start_new_session=True)
         
