@@ -171,14 +171,10 @@ class Manager:
     def run_tray(self):
         try:
             from core.tray import OracleTray
-            print("💎 Launching native system tray...")
-            print("📝 Note: If configuration is missing, follow the Zenity prompts on your screen.")
             tray = OracleTray(self)
-            print("✅ Tray icon is now active in your top bar (look for the white cloud).")
             tray.run()
-        except ImportError as e:
-            print(f"❌ Error: Required libraries for tray not found ({e}).")
-            print("Try running: python3 manager.py setup")
+        except ImportError:
+            print("❌ Error: Required libraries not found. Run 'oracleft setup'")
 
     def link_argos(self):
         argos_dir = Path("~/.config/argos/").expanduser()

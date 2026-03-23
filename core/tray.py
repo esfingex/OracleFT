@@ -119,7 +119,6 @@ class OracleTray:
         def setup(icon):
             icon.visible = True
             icon.notify("OracleFT está activo y vigilando.", "Cloud Automator")
-            print("🚀 Tray icon with notification is now live.")
 
         # Always run in the main thread for pystray compatibility
         self.icon.run(setup=setup)
