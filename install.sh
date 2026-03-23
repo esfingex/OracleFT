@@ -1,27 +1,42 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Oracle Free Tier Instance Creation Setup..."
+echo "🚀 Starting OracleFT Professional Installation..."
 
-# Check for python3
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Error: python3 is not installed."
-    exit 1
+# 1. Base Checks
+if [ "$EUID" -ne 0 ]; then
+  echo "⚠️  Please run with sudo: sudo ./install.sh"
+  exit 1
 fi
 
-# Check for venv
-if ! python3 -m venv --help &> /dev/null; then
-    echo "❌ Error: python3-venv is missing."
-    echo "Please install it: sudo apt install python3-venv"
-    exit 1
-fi
+TARGET_DIR="/opt/oracleft"
+USER_NAME=$(logname || echo $SUDO_USER)
 
-echo "📦 Creating virtual environment (.venv)..."
-python3 -m venv .venv
+echo "📦 Creating application directory at $TARGET_DIR..."
+mkdir -p "$TARGET_DIR"
 
-echo "🛠️ Installing dependencies..."
-./.venv/bin/pip install --upgrade pip
-./.venv/bin/pip install -r requirements.txt
+echo "📂 Copying files..."
+cp -r . "$TARGET_DIR/"
+chown -R "$USER_NAME:$USER_NAME" "$TARGET_DIR"
 
-echo "✅ Setup complete!"
-echo "You can now run: ./.venv/bin/python3 manager.py link-argos"
+echo "🐍 Setting up Virtual Environment in $TARGET_DIR..."
+# Ensure we use the target directory's python
+sudo -u "$USER_NAME" python3 -m venv "$TARGET_DIR/.venv" --system-site-packages
+sudo -u "$USER_NAME" "$TARGET_DIR/.venv/bin/pip" install --upgrade pip
+sudo -u "$USER_NAME" "$TARGET_DIR/.venv/bin/pip" install -r "$TARGET_DIR/requirements.txt"
+
+echo "⚙️  Configuring System Services..."
+# Delegate complex logic to manager.py install
+sudo -u "$USER_NAME" "$TARGET_DIR/.venv/bin/python3" "$TARGET_DIR/manager.py" install
+
+echo ""
+echo "✅ OracleFT has been successfully installed in $TARGET_DIR"
+echo "🌟 You can now launch the tray icon by running: oracleft-tray"
+echo "   (Or simply restart your session to see it automatically)"
+
+# Create a symlink in /usr/local/bin for easy access
+ln -sf "$TARGET_DIR/.venv/bin/python3" /usr/local/bin/oracleft
+ln -sf "$TARGET_DIR/manager.py" /usr/local/bin/oracleft-manager
+chmod +x "$TARGET_DIR/manager.py"
+
+echo "🚀 Done! Your Oracle Instance Automator is now a system service."
