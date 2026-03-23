@@ -94,10 +94,14 @@ class Manager:
                                 stdout=log_file, stderr=log_file, 
                                 start_new_session=True)
         
-        with open(self.pid_file, "w") as f:
-            f.write(str(proc.pid))
-            
         print(f"✅ Script started with PID {proc.pid}. Check logs for progress.")
+        
+        # Also try to launch the tray if not already running
+        try:
+            subprocess.Popen([str(self.python_bin), str(self.base_path / "manager.py"), "tray"], 
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        except Exception:
+            pass
 
     def stop(self):
         pid = self.get_pid()
