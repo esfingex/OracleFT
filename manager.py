@@ -9,7 +9,8 @@ from pathlib import Path
 
 class Manager:
     def __init__(self):
-        self.base_path = Path(__file__).parent.absolute()
+        # Use resolve() to get the real path even if called via symlink
+        self.base_path = Path(__file__).resolve().parent
         self.venv_path = self.base_path / ".venv"
         self.python_bin = self.base_path / ".venv" / "bin" / "python3" if os.name != "nt" else self.venv_path / "Scripts" / "python.exe"
         self.pid_file = self.base_path / "oracleft.pid"
