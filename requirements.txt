@@ -1,0 +1,6 @@
+oci
+paramiko
+python-dotenv
+pystray
+pillow
+requests

@@ -1,0 +1,23 @@
+# Dependencies
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Private OCI Credentials
+oci_config
+oci_config copy
+sample_oci_config
+oci.env
+.ssh_key/
+*.pem
+oracle_ft.db
+launch_instance.log
+oracleft.pid
+.instance_created
+
+# Private Agent Skills
+agents/
+id_rsa
+id_rsa.pub
+
